@@ -397,8 +397,31 @@ class Hypergraph:
                 continue
             self.remove_node(n)
 
-    @cached_property
+    @property
     def nodes(self):
+        """A NodeView of the hypergraph.
+
+        Can be used as `H.nodes` for data lookup and for set-like operations.
+        Can also be used as `H.nodes[id]` to return a
+        dictionary of the node attributes.
+
+        Returns
+        -------
+        NodeView
+            Allows set-like operations over the nodes as well as node
+            attribute dict lookup.
+
+        Notes
+        -----
+        Membership tests and iterating over nodes can also be done via the hpyergraph.
+        That is, ``n in H.nodes`` is equivalent to ``n in H``, and ``for n in H`` is
+        equivalent to ``for n in H.nodes``.
+
+        """
+        return NodeView(self)
+
+    @cached_property
+    def fast_nodes(self):
         """A NodeView of the hypergraph.
 
         Can be used as `H.nodes` for data lookup and for set-like operations.
@@ -762,8 +785,28 @@ class Hypergraph:
         if edges:
             self.add_edges_from(edges)
 
-    @cached_property
+    @property
     def edges(self):
+        """An EdgeView of the hypergraph.
+
+        The EdgeView provides set-like operations on the edge IDs as well as edge
+        attribute lookup.
+
+        Parameters
+        ----------
+        e : hashable or None (default = None)
+            The edge ID to access
+
+        Returns
+        -------
+        edges : EdgeView
+            A view of edges in the hypergraph.
+
+        """
+        return EdgeView(self)
+
+    @cached_property
+    def fast_edges(self):
         """An EdgeView of the hypergraph.
 
         The EdgeView provides set-like operations on the edge IDs as well as edge
