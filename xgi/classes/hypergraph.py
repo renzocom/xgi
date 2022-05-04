@@ -1,5 +1,6 @@
 """Base class for undirected hypergraphs."""
 from copy import deepcopy
+from functools import cached_property
 from warnings import warn
 
 import numpy as np
@@ -396,7 +397,7 @@ class Hypergraph:
                 continue
             self.remove_node(n)
 
-    @property
+    @cached_property
     def nodes(self):
         """A NodeView of the hypergraph.
 
@@ -417,12 +418,7 @@ class Hypergraph:
         equivalent to ``for n in H.nodes``.
 
         """
-        nodes = NodeView(self)
-        # Lazy View creation: overload the (class) property on the instance
-        # Then future H.nodes use the existing View
-        # setattr doesn't work because attribute already exists
-        self.__dict__["nodes"] = nodes
-        return nodes
+        return NodeView(self)
 
     def has_node(self, n):
         """Whether the specified node is in the hypergraph.
@@ -766,7 +762,7 @@ class Hypergraph:
         if edges:
             self.add_edges_from(edges)
 
-    @property
+    @cached_property
     def edges(self):
         """An EdgeView of the hypergraph.
 
@@ -784,12 +780,7 @@ class Hypergraph:
             A view of edges in the hypergraph.
 
         """
-        edges = EdgeView(self)
-        # Lazy View creation: overload the (class) property on the instance
-        # Then future H.edges use the existing View
-        # setattr doesn't work because attribute already exists
-        self.__dict__["edges"] = edges
-        return edges
+        return EdgeView(self)
 
     def get_edge_data(self, id, default=None):
         """Get the attributes of an edge.

@@ -267,3 +267,8 @@ def test_add_node_to_edge():
         "fruits": ["apple", "banana", "pear"],
         "veggies": ["lettuce"],
     }
+
+
+def test_nodes_cached(edgelist1):
+    H = xgi.Hypergraph(edgelist1)
+    assert id(H.nodes) == id(H.nodes)
