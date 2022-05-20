@@ -21,16 +21,19 @@ __all__ = [
 
 
 def draw(
-    H,
-    pos=None,
-    cmap=None,
-    ax=None,
-    edge_lc="black",
-    edge_lw=1.5,
-    node_fc="white",
-    node_ec="black",
-    node_lw=1,
-    node_size=0.03,
+        H,
+        pos=None,
+        cmap=None,
+        ax=None,
+        edge_lc="black",
+        edge_lw=1.5,
+        node_fc="white",
+        node_ec="black",
+        node_lw=1,
+        node_size=0.03,
+        nodecolors=None,
+        nodelabels=None,
+        nodelabel_xoffset=0.05
 ):
     """
     Draw hypergraph or simplicial complex.
@@ -67,6 +70,12 @@ def draw(
     node_size : float (default=0.03)
     Size of the nodes.
 
+    nodecolors : dict (node to color)
+    Node colors
+
+    nodelabels : dict (node to label), if True node indices are used
+    Node labels
+
     Examples
     --------
     >>> import xgi
@@ -75,7 +84,6 @@ def draw(
     >>> xgi.draw(H, pos=xgi.barycenter_spring_layout(H))
 
     """
-
     if pos is None:
         pos = xgi.barycenter_spring_layout(H)
 
@@ -179,12 +187,25 @@ def draw(
     # Drawing the nodes
     for i in list(H.nodes):
         (x, y) = pos[i]
+        nodecolor = node_fc if nodecolors is None else nodecolors[i]
         circ = plt.Circle(
             [x, y],
             radius=node_size,
             lw=node_lw,
             zorder=d_max + 1,
             ec=node_ec,
-            fc=node_fc,
+            fc=nodecolor,
         )
         ax.add_patch(circ)
+
+    # Drawing node labels
+    if nodelabels is not None:
+
+        for i in list(H.nodes):
+            (x, y) = pos[i]
+            s = str(i) if nodelabels==True else str(nodelabels[i])
+            ax.text(
+                    x + nodelabel_xoffset,
+                    y,
+                    s)
+

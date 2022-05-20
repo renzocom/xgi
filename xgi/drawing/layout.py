@@ -56,8 +56,7 @@ def random_layout(H, center=None, dim=2, seed=None):
 
     return pos
 
-
-def pairwise_spring_layout(H):
+def pairwise_spring_layout(H, k=None):
     """
     Position the nodes using Fruchterman-Reingold force-directed
     algorithm using the graph projection of the hypergraph
@@ -94,11 +93,11 @@ def pairwise_spring_layout(H):
     if type(H) == xgi.classes.simplicialcomplex.SimplicialComplex:
         H = xgi.from_simplicial_complex_to_hypergraph(H)
     G = xgi.convert_to_graph(H)
-    pos = nx.spring_layout(G)
+    pos = nx.spring_layout(G, k=k)
     return pos
 
 
-def barycenter_spring_layout(H, return_phantom_graph=False):
+def barycenter_spring_layout(H, return_phantom_graph=False, k=None):
     """
     Position the nodes using Fruchterman-Reingold force-directed
     algorithm using an augmented version of the the graph projection
@@ -157,10 +156,10 @@ def barycenter_spring_layout(H, return_phantom_graph=False):
             phantom_node_id += 1
 
     # Creating a dictionary for the position of the nodes with the standard spring layout
-    pos_with_phantom_nodes = nx.spring_layout(G)
+    pos_with_phantom_nodes = nx.spring_layout(G, k=k)
 
     # Retaining only the positions of the real nodes
-    pos = {k: pos_with_phantom_nodes[k] for k in list(H.nodes)}
+    pos = {n: pos_with_phantom_nodes[n] for n in list(H.nodes)}
 
     if return_phantom_graph:
         return pos, G
@@ -168,7 +167,7 @@ def barycenter_spring_layout(H, return_phantom_graph=False):
         return pos
 
 
-def weighted_barycenter_spring_layout(H, return_phantom_graph=False):
+def weighted_barycenter_spring_layout(H, return_phantom_graph=False, k=None):
     """
     Position the nodes using Fruchterman-Reingold force-directed
     algorithm using an augmented version of the the graph projection
@@ -229,10 +228,10 @@ def weighted_barycenter_spring_layout(H, return_phantom_graph=False):
             phantom_node_id += 1
 
     # Creating a dictionary for the position of the nodes with the standard spring layout
-    pos_with_phantom_nodes = nx.spring_layout(G, weight="weight")
+    pos_with_phantom_nodes = nx.spring_layout(G, weight="weight", k=k)
 
     # Retaining only the positions of the real nodes
-    pos = {k: pos_with_phantom_nodes[k] for k in list(H.nodes)}
+    pos = {n: pos_with_phantom_nodes[n] for n in list(H.nodes)}
 
     if return_phantom_graph:
         return pos, G
